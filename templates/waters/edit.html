@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Home{% endblock %}
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/sand.css' %}">
+    <link rel="stylesheet" href="https://unpkg.com/@stackoverflow/stacks/dist/css/stacks.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/@stackoverflow/stacks-editor/dist/styles.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/@stackoverflow/stacks/dist/js/stacks.min.js"></script>
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@latest/highlight.min.js"></script>
+    <script src="https://unpkg.com/@stackoverflow/stacks-editor/dist/app.bundle.js"></script>
+{% endblock %}
+
+{% block body %}
+
+
+<div class="navbar">
+  <a href="{% url 'authentication:index' %}">Tropics</a>
+</div>
+
+<div class="navbar-spacing"></div>
+<div class="container">
+    <div class="left-container">
+        <a class = "left-button" href = "{% url 'sands:index' %}">Sands</a>
+    </div>
+    <div class="right-container">
+        <div class="main">
+            <div class = "create-water">
+                <h1 class = "create-water-header">Your Water</h1>
+                <form action = "" method = "POST" onsubmit="return editWater(event);">
+                    {% csrf_token %}
+                    <div id="editor-container"></div>
+                    <input type="hidden" name="content" id="water_content">
+                    <input type = "submit" value = "Edit Your Water">
+                    <button onclick="doStuff(event)" style="width: 100px; height: 100px; background-color: blue; color: white;">Click me</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+    function createMessage(message) {
+        var snackbar = document.createElement("div");
+        snackbar.setAttribute("id", "snackbar");
+        snackbar.innerHTML = message;
+        document.body.appendChild(snackbar);
+        setTimeout(remove, 3500);
+
+        function remove() {
+            snackbar.remove();
+        }
+    }
+
+    var convert = function(convert){
+        return $("<span />", { html: convert }).text();
+    };
+
+    new window.stacksEditor.StacksEditor(
+      document.querySelector("#editor-container"),
+      convert("{{water.content}}"), {}
+    );
+
+    function editWater(event) {
+        var changed = false;
+        if(document.querySelector(".s-code-block") == null) {
+            changed = true;
+            document.getElementsByClassName("js-editor-toggle-btn")[1].click();
+        }
+
+        var content = document.getElementsByClassName("s-code-block")[0].textContent;
+
+        if(content.length < 25) {
+            createMessage("Please add more content!");
+            if(changed == true) {
+                document.getElementsByClassName("js-editor-toggle-btn")[0].click();
+            }
+            return false;
+        }else{
+            document.getElementById("water_content").value = content.replace(/\n/g, "\\n").replace(/'/g, "\'").replace(/"/g, '\"');
+            return true;
+        }
+    }
+
+</script>
+
+{% endblock %}

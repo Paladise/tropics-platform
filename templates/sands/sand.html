@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% load check_mango %}
+{% load static %}
+{% block title %}{{sand.name}}{% endblock %}
+
+{% block head %}
+    <script src="{% static 'js/delete.js' %}"></script>
+    <script src="{% static 'js/filter_waters.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/sand.css' %}">
+    <link rel="stylesheet" href="https://unpkg.com/@stackoverflow/stacks/dist/css/stacks.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/@stackoverflow/stacks-editor/dist/styles.css">
+
+    <script src="https://unpkg.com/@stackoverflow/stacks/dist/js/stacks.min.js"></script>
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@latest/highlight.min.js"></script>
+    <script src="https://unpkg.com/@stackoverflow/stacks-editor/dist/app.bundle.js"></script>
+{% endblock %}
+
+{% block body %}
+
+<div class="navbar">
+  <a href="{% url 'authentication:index' %}">Tropics</a>
+  <input class = "searchbar" placeholder = "Filter waters here..." onkeyup="filter()" id = "search"/>
+</div>
+
+<div class="navbar-spacing"></div>
+<div class="container">
+    <div class="left-container">
+        <a class = "left-button" href = "{% url 'sands:index' %}">Sands</a>
+    </div>
+    <div class="right-container">
+        <div class="header">
+            <h1 class="sand-name">{{sand.name}}</h1>
+            <div class="sand-details">
+                <p class="sand-detail">{{sand.category}}</p>
+                <p class="sand-detail">Viewed {{num_views}} time{{ num_views|pluralize:",s" }}</p>
+                <p class="sand-detail">{{waters.count}} water{{ waters.count|pluralize:",s" }}</p>
+            </div>
+
+        </div>
+        <div class="main">
+            {% for water in waters %}
+                <div class = "water" id = {{water.id}}>
+                    <div class = "mango-container">
+                        <form action = "" method = "POST" class = "mango-form">
+                            {% csrf_token %}
+                            {% if user|user_gave_mango:water == True %}
+                                <input type="hidden" value={{water.id}} name="remove_mango" />
+                                <input type="image" src="{% static 'images/gave_mango.png' %}" class = "mango"/>
+                            {% else %}
+                                <input type="hidden" value={{water.id}} name="give_mango" />
+                                <input type="image" src="{% static 'images/kept_mango.png' %}" class = "mango"/>
+                            {% endif %}
+
+                        </form>
+
+                        <p class="num-mangoes">{{water.mangoes}}</p>
+                    </div>
+                    <div class = "water-content">
+                        <p class="s-prose" id="water-text-content-{{water.id}}"></p>
+
+                        <div class = "water-footer">
+                            <div class = "water-menu">
+                                <form class="water-menu-item" onsubmit = "return false;">
+                                    <input type="submit" id="share-{{water.id}}" value = "Share"/>
+                                </form>
+                                {% if user|user_can_moderate:water.author == True %}
+                                    <form class="water-menu-item" action = "{% url 'waters:edit' water.id %}" method = "POST">
+                                        {% csrf_token %}
+                                        <input type="submit" value = "Edit"/>
+                                    </form>
+                                    <form class="water-menu-item" action = "" method = "POST">
+                                        {% csrf_token %}
+                                        <input type="hidden" value={{water.id}} name="delete" />
+                                        <input type="submit" onclick="delete_water(event)" value = "Delete"/>
+                                    </form>
+                                {% endif %}
+                            </div>
+                            {% if water.date_edited != water.date_added %}
+                                <div class = "water-signature">
+                                    <p>edited {{water.date_edited}}</p>
+                                </div>
+                            {% endif %}
+                            <div class="water-signature">
+                                <p style = "flex-basis: 1;">written {{water.date_added}}</p>
+                                <p class = "water-credentials">{{water.author.full_name}} ({{water.author.username}})<br/>{{water.author.qualification}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            {% endfor %}
+
+            <div class = "create-water">
+                <h1 class = "create-water-header">Your Water</h1>
+                <form action = "" method = "POST" onsubmit="return createWater(event);">
+                    {% csrf_token %}
+                    <div id="editor-container"></div>
+                    <input type="hidden" name="content" id="water_content">
+                    <input type = "submit" value = "Add Your Water">
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/commonmark@0.29.3/dist/commonmark.js"></script>
+<script type="text/javascript">
+    function createMessage(message) {
+        var snackbar = document.createElement("div");
+        snackbar.setAttribute("id", "snackbar");
+        snackbar.innerHTML = message;
+        document.body.appendChild(snackbar);
+        setTimeout(remove, 3500);
+
+        function remove() {
+            snackbar.remove();
+        }
+    }
+
+    {% if messages %}
+        {% for message in messages %}
+            createMessage("{{message}}");
+        {% endfor %}
+    {% endif %}
+
+    new window.stacksEditor.StacksEditor(
+      document.querySelector("#editor-container"),
+      "", {}
+    );
+
+    function createWater(event) {
+        var changed = false;
+        if(document.querySelector(".s-code-block") == null) {
+            changed = true;
+            document.getElementsByClassName("js-editor-toggle-btn")[1].click();
+        }
+
+        var content = document.getElementsByClassName("s-code-block")[0].textContent;
+
+        if(content.length < 25) {
+            createMessage("Please add more content!");
+            if(changed == true) {
+                document.getElementsByClassName("js-editor-toggle-btn")[0].click();
+            }
+            return false;
+        }else{
+            document.getElementById("water_content").value = content.replace(/\n/g, "\\n").replace(/'/g, "\'").replace(/"/g, '\"');
+            return true;
+        }
+    }
+
+    function share(link) {
+        var TempText = document.createElement("input");
+        TempText.value = link;
+        document.body.appendChild(TempText);
+        TempText.select();
+        document.execCommand("copy");
+        document.body.removeChild(TempText);
+        createMessage("Copied share link");
+    }
+
+    var reader = new commonmark.Parser();
+    var writer = new commonmark.HtmlRenderer();
+
+    {% for water in waters %}
+        console.log("{{water.content|safe}}");
+        var parsed = reader.parse('{{water.content|safe}}');
+        var result = writer.render(parsed); // result is a String
+        console.log("Result: " + result);
+        document.getElementById("water-text-content-{{water.id}}").innerHTML = result;
+        document.getElementById("share-{{water.id}}").setAttribute("onclick", "share('" + window.location.origin + "/waters/" + "{{water.id}}')");
+    {% endfor %}
+
+    {% if go_to_water %}
+        console.log("Scroll to: {{ go_to_water }}");
+        document.getElementById("{{ go_to_water }}").scrollIntoView();
+    {% endif %}
+</script>
+
+
+{% endblock %}

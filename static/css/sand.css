@@ -1,0 +1,259 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body, html {
+    height: 100%;
+}
+
+button {
+    all: unset;
+}
+
+.navbar {
+    overflow: hidden;
+    background-color: rgb(248, 249, 249);
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px, rgba(0, 0, 0, 0.05) 0px 1px 4px 0px, rgba(0, 0, 0, 0.05) 0px 2px 8px 0px;
+    color: rgb(82, 89, 96);
+    position: fixed;
+    z-index: 20;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 62px;
+}
+
+.navbar a {
+    position: absolute;
+    left: 0px;
+    text-align: center;
+    padding: 20px 16px;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.navbar a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+.searchbar {
+    display: flex;
+    background-color: white;
+    margin: 12px 0px;
+    height: 36px;
+    width: 500px;
+    border: 1px rgb(186, 191, 196) solid;
+    border-radius: 5px;
+    padding-left: 15px;
+}
+
+input {
+    all: unset;
+}
+
+.navbar-spacing{
+    width: 100%;
+    height: 62px;
+}
+
+.container{
+    width: 100%;
+    max-width: 1264px;
+    margin: 0 auto;
+    display: flex;
+    overflow:auto;
+}
+
+.left-container {
+    width: 150px;
+    border-right: 1px solid hsl(210,8%,90%);
+    padding-top: 40px;
+    overflow: hidden;
+}
+
+.left-button {
+    display:block;
+    width:inherit;
+    height: 40px;
+    line-height: 20px;
+    text-decoration: none;
+    color: rgb(82, 89, 96);
+    padding: 10px 10px;
+    padding-left: 15px;
+    position: fixed;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+
+}
+
+.left-button:hover {
+    background-color: #f7f8f9;
+}
+
+.right-container {
+    flex: 1;
+    padding: 20px;
+}
+
+.main{
+    width: 70%;
+}
+
+.header{
+    height: 80px;
+    width: 100%;
+    border-bottom: 1px solid hsl(210,8%,90%);
+    margin-bottom: 10px;
+}
+
+.sand-name {
+    font-size: 28px;
+    font-weight: lighter;
+    margin-bottom: 5px;
+}
+
+.sand-details {
+    display: flex;
+}
+
+.sand-detail {
+    font-size: 12px;
+    padding-right: 15px;
+}
+
+#snackbar {
+    position: fixed;
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: #4285F4;
+    color: #fff;
+    text-align: center;
+    padding: 16px;
+    z-index: 10;
+    left: 50%;
+    bottom: 30px;
+    font-size: 17px;
+    border-radius: 5px;
+    animation: fadein 0.5s, fadeout 0.5s 3s;
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+.water {
+    position: relative;
+    display: flex;
+    padding: 10px 0px;
+    overflow: hidden;
+    max-width: 800px;
+    border-bottom: 1px solid hsl(210,8%,90%);
+}
+
+.mango-container {
+    width: 60px;
+    height: 100%;
+    padding-right: 10px;
+}
+
+.mango-form {
+    display: block;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.mango {
+    width: 40px;
+}
+
+.mango:hover {
+    cursor: pointer;
+}
+
+.num-mangoes {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 21px;
+}
+
+.water-content {
+    flex: 1;
+    padding-right: 10px;
+    word-wrap: break-word;
+    overflow: auto;
+}
+
+.create-water-header {
+    font-size: 24px;
+    font-weight: lighter;
+    margin: 20px 0px;
+}
+
+.water-footer {
+    width: 100%;
+    margin-top: 24px;
+    display: flex;
+    color: rgb(106, 115, 124);
+    font-size: 12px;
+}
+
+.water-menu {
+    display: flex;
+    justify-content: flex-start;
+    flex-grow: 1;
+}
+
+.water-menu-item {
+    height: 30px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 0px;
+    padding-right: 15px;
+}
+
+.water-menu-item:hover {
+    cursor: pointer;
+}
+
+.water-signature {
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    margin-left: 15px;
+    text-align: right;
+}
+
+.water-credentials {
+    font-size: 14px;
+    flex-grow: 1;
+    margin-top: 15px;
+    color: rgb(10, 149, 255);
+}
+
+.create-water input[type=submit] {
+    background-color: rgb(10, 149, 255);
+    color: white;
+    width: 120px;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    border-radius: 2px;
+    font-size: 14px;
+    font-weight: lighter;
+    margin-top: 5px;
+}
+
+.create-water input[type=submit]:hover {
+    cursor: pointer;
+}

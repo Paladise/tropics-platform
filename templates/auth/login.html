@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Login {% endblock %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+<script src="{% static 'js/last_updated.js' %}"></script>
+{% endblock %}
+{% block body %}
+
+<section class="showcase">
+    <header>
+        <h2 class="logo">Tropics</h2>
+    </header>
+    <video src="{% static 'videos/waves3.mp4' %}" muted loop autoplay></video>
+    <div class="overlay"></div>
+    <div class="text">
+        <h1>Login</h1>
+        <p>Please login to be able to access Sands and the rest of the website.</p>
+        <form action="{% url 'social:begin' 'ion' %}{% if request.GET.next %}?next={{ request.GET.next|urlencode }}{% endif %}" method="POST">
+            {% csrf_token %}
+            <input type="submit" class = "main-button" value="Login with Ion" />
+        </form>
+        <a id = "unreadable" href = "https://ion.tjhsst.edu/about">What is Ion?</a>
+    </div>
+    <div class="details">
+        <a href="{% url 'authentication:about' %}">About & Credits</a>
+        <p id = "last-updated">Last Updated: 7/24/2022</p>
+    </div>
+  </section>
+
+{% endblock %}

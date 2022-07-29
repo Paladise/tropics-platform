@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Tropics{% endblock %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+<script src="{% static 'js/last_updated.js' %}"></script>
+<script src="{% static 'js/ripple.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+
+<section class="showcase">
+    <header>
+        <h2 class="logo">Tropics</h2>
+    </header>
+    <video src="{% static 'videos/waves3.mp4' %}" muted loop autoplay></video>
+    <div class="overlay"></div>
+    <div class="text">
+        {% if user.is_authenticated %}
+            <h1>Welcome, {{ user.first_name }}!</h1>
+        {% else %}
+            <h1>Welcome, random person!</h1>
+        {% endif %}
+        <p>Tropics is a public platform for students designed to facilitate discussion in preparing for classes and teachers at TJ.</p>
+        <a class = "main-button" href = "{% url 'sands:index' %}" onclick = "createRipple(event)">Go to Sands</a>
+    </div>
+    <div class="details">
+        <a href="{% url 'authentication:about' %}">About & Credits</a>
+        {% if user.is_staff %}
+            <a href = "{% url 'admin:index' %}">Admin</a>
+        {% endif %}
+        {% if user.is_authenticated %}
+            <a href = "{% url 'authentication:logout' %}">Logout</a>
+        {% endif %}
+        <p id = "last-updated">Last Updated: 7/24/2022</p>
+    </div>
+  </section>
+
+
+
+{% endblock %}
