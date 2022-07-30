@@ -256,4 +256,5 @@ input {
 
 .create-water input[type=submit]:hover {
     cursor: pointer;
+    background-color: #1a73e8;
 }
