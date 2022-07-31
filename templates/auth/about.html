@@ -1,12 +1,48 @@
 {% extends "base.html" %}
-{% block title %}Home{% endblock %}
+{% load static %}
+{% block title %}About / Credits{% endblock %}
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/about.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/sand.css' %}">
+    <link rel="stylesheet" href="https://unpkg.com/@stackoverflow/stacks/dist/css/stacks.min.css">
+{% endblock %}
 
 {% block body %}
 
-<h1>About</h1>
-<p>This is a website!!!!</p>
-<h1>Credits</h1>
-<a href="https://www.flaticon.com/free-icons/mango" title="mango icons">Mango icons created by Freepik - Flaticon</a>
-<a href="https://www.pexels.com/video/sea-with-blue-and-clear-waters-3290724/" title = "Waves">Ocean waves video by Engin Akyurt</a>
+<div class="navbar">
+  <a href="{% url 'authentication:index' %}">Tropics</a>
+</div>
+
+<div class="navbar-spacing"></div>
+<div class="container">
+    <div class="left-container">
+        <a class = "left-button" href = "{% url 'sands:index' %}">Sands</a>
+    </div>
+    <div class="right-container">
+        <div class="header">
+            <h1 class="sand-name">About</h1>
+        </div>
+        <div class="main">
+            <p>Tropics is a platform designed to help students prepare for upcoming classes and teachers in a collaborative way.
+            If you encounter a bug, feel free to email :)</p>
+            <h1>Guidelines</h1>
+            <p>Use common sense.</p>
+            
+            <h1>FAQs</h1>
+            <h2>Why is this application summer-themed?</h2>
+            <p>Good question</p>
+            <h2>Why the emoji icon?</h2>
+            <p>Good question</p>
+            <h2>How do I format waters?</h2>
+            <p>Waters use markdown, but there is also for a rich-text editor option (it may be a big buggy tho so if there's formatting / submitting problems try using the markdown editor).</p>
+            
+            <h1>Credits</h1>
+            <a href="https://www.flaticon.com/free-icons/mango" title="mango icons">Mango icons created by Freepik - Flaticon</a>
+            <br/>
+            <a href="https://www.pexels.com/video/sea-with-blue-and-clear-waters-3290724/" title = "Waves">Ocean waves video by Engin Akyurt</a>
+        </div>
+    </div>
+</div>
+
 
 {% endblock %}
