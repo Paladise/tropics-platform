@@ -5,7 +5,7 @@ from django.http import HttpRequest, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Sand, SandView
+from .models import Sand, SandView, SandTeacher
 from waters.models import Water
 
 
@@ -60,5 +60,10 @@ def sand(request, id, the_slug):
             water = Water.objects.get(id=data["delete"])
             water.delete()
             messages.add_message(request, messages.SUCCESS, "Deleted water")
-
+        elif "teacher_name" in data:
+            if not SandTeacher.objects.filter(sand=sand, display_name=data["teacher_name"]).exists() and len(data["teacher_name"]) > 5:
+                teacher = SandTeacher(sand=sand, display_name=data["teacher_name"], fcps_email=data["teacher_email"], added_by=request.user)
+                teacher.save()
+                messages.add_message(request, messages.SUCCESS, "Added Teacher")
+    
     return render(request, 'sands/sand.html', {"sand": sand, "waters": waters, "num_views": num_views, "go_to_water": go_to_water})

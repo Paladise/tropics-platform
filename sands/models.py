@@ -1,6 +1,9 @@
 from datetime import datetime
+from django.core.validators import MinLengthValidator
 from django.db import models
 from django.utils.text import slugify
+
+# from authentication.models import User # Commented to prevent circular import error
 
 
 # A sand will act as a room
@@ -20,6 +23,16 @@ class Sand(models.Model):
 
 class SandView(models.Model):
     sand = models.ForeignKey(Sand, related_name="sandviews", on_delete=models.CASCADE)
-    ip = models.CharField(max_length=40)
     session = models.CharField(max_length=40)
-    created = models.DateTimeField(default=datetime.now())
+    
+class SandTeacher(models.Model):
+    sand = models.ForeignKey(Sand, related_name="teachers", on_delete=models.CASCADE)
+    display_name = models.CharField(max_length=100,
+                validators = [
+                    MinLengthValidator(5, 'The field must contain at least 5 characters.')
+                ])
+    fcps_email = models.EmailField(max_length=100, null=True, blank=True)
+    added_by = models.ForeignKey("authentication.User", related_name="added_teachers", on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.display_name
