@@ -32,6 +32,9 @@
         <div class="header">
             <h1 class="sand-name">{{sand.name}}</h1>
             <div class="sand-details">
+                {% if sand.aka %}
+                    <p class="sand-detail">Also called: {{sand.aka}}</p>
+                {% endif %}
                 <p class="sand-detail">{{sand.category}}</p>
                 <p class="sand-detail">Viewed {{num_views}} time{{ num_views|pluralize:",s" }}</p>
                 <p class="sand-detail">{{waters.count}} water{{ waters.count|pluralize:",s" }}</p>
