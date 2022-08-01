@@ -20,10 +20,7 @@ def index(request):
 def sand(request, id, the_slug):
     sand = Sand.objects.get(id=id)
     if not SandView.objects.filter(sand=sand,session=request.session.session_key):
-        view = SandView(sand=sand,
-                        ip=request.META['REMOTE_ADDR'],
-                        created=datetime.now(),
-                        session=request.session.session_key)
+        view = SandView(sand=sand, session=request.session.session_key)
         view.save()
     num_views = SandView.objects.filter(sand=sand).count()
     waters = Water.objects.filter(sand=sand)
