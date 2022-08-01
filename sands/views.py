@@ -3,14 +3,15 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_exempt
 
 from .models import Sand, SandView, SandTeacher
 from waters.models import Water
 
+from .forms import TeacherForm
+
 
 @login_required
-def index(request: HttpRequest) -> HttpResponse:
+def index(request):
     sands = Sand.objects.all()
     return render(request, "sands/index.html", {"sands": sands})
 
@@ -27,6 +28,7 @@ def sand(request, id, the_slug):
     num_views = SandView.objects.filter(sand=sand).count()
     waters = Water.objects.filter(sand=sand)
     go_to_water = ""
+    teacher_form = TeacherForm()
     if request.method == "POST":
         data = request.POST.dict()
         if "content" in data:
@@ -34,7 +36,6 @@ def sand(request, id, the_slug):
             content = content.replace('"', '\\"')
             content = content.replace("'", "\\'")
 
-            sand = Sand.objects.get(id=id)
             if not Water.objects.filter(content=content, author=request.user, sand=sand).exists():
                 water = Water(content=content, author=request.user, sand=sand)
                 water.save()
@@ -60,10 +61,15 @@ def sand(request, id, the_slug):
             water = Water.objects.get(id=data["delete"])
             water.delete()
             messages.add_message(request, messages.SUCCESS, "Deleted water")
-        elif "teacher_name" in data:
-            if not SandTeacher.objects.filter(sand=sand, display_name=data["teacher_name"]).exists() and len(data["teacher_name"]) > 5:
-                teacher = SandTeacher(sand=sand, display_name=data["teacher_name"], fcps_email=data["teacher_email"], added_by=request.user)
+        elif "add_teacher" in data:
+            form = TeacherForm(request.POST)
+            if form.is_valid():
+                teacher = form.save(commit=False)
+                teacher.sand = sand
+                teacher.added_by = request.user
                 teacher.save()
                 messages.add_message(request, messages.SUCCESS, "Added Teacher")
+            else:
+                teacher_form = form
     
-    return render(request, 'sands/sand.html', {"sand": sand, "waters": waters, "num_views": num_views, "go_to_water": go_to_water})
+    return render(request, 'sands/sand.html', {"sand": sand, "waters": waters, "num_views": num_views, "go_to_water": go_to_water, "teacher_form": teacher_form})

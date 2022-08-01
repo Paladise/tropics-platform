@@ -11,6 +11,8 @@ button {
     all: unset;
 }
 
+ul.errorlist {display:none;} /* Hide Django errors :vomit: */
+
 .navbar {
     overflow: hidden;
     background-color: rgb(248, 249, 249);

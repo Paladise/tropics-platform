@@ -39,11 +39,11 @@
                 {% for teacher in sand.teachers.all %}
                     <p class="sand-teacher">{{teacher.display_name}}</p>
                 {% endfor %}
+                
                 <form action = "" method = "POST" class = "add-teacher">
                     {% csrf_token %}
-                    <input name="teacher_name" placeholder = "Name">
-                    <input name="teacher_email" placeholder = "Email (Optional)">
-                    <input type = "submit" value = "Add Teacher">
+                    {{teacher_form}}
+                    <input type = "submit" value = "Add Teacher" name = "add_teacher">
                 </form>
             </div>
 

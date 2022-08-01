@@ -27,7 +27,7 @@ class SandView(models.Model):
     
 class SandTeacher(models.Model):
     sand = models.ForeignKey(Sand, related_name="teachers", on_delete=models.CASCADE)
-    display_name = models.CharField(max_length=100,
+    display_name = models.CharField(max_length=100, unique = True,
                 validators = [
                     MinLengthValidator(5, 'The field must contain at least 5 characters.')
                 ])
