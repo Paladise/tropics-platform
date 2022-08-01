@@ -48,7 +48,9 @@ def sand(request, id, the_slug):
                 messages.add_message(request, messages.SUCCESS, "Removed mango")
         elif "give_mango" in data:
             water = Water.objects.get(id=data["give_mango"])
-            if not request.user.gave_mangoes.filter(id=water.id).exists():
+            if request.user == water.author:
+                messages.add_message(request, messages.ERROR, "Can't give mango to your own water!")
+            elif not request.user.gave_mangoes.filter(id=water.id).exists():
                 request.user.gave_mangoes.add(water)
                 water.mangoes += 1
                 water.save()

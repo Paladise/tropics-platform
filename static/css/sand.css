@@ -177,7 +177,6 @@ input {
     position: fixed;
     min-width: 250px;
     margin-left: -125px;
-    background-color: #4285F4;
     color: #fff;
     text-align: center;
     padding: 16px;
@@ -187,6 +186,14 @@ input {
     font-size: 17px;
     border-radius: 5px;
     animation: fadein 0.5s, fadeout 0.5s 3s;
+}
+
+.snackbar-blue {
+    background-color: #4285F4;
+}
+
+.snackbar-red {
+    background-color: #DB4437;
 }
 
 @keyframes fadein {

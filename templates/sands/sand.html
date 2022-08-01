@@ -121,9 +121,14 @@
 
 <script src="https://unpkg.com/commonmark@0.29.3/dist/commonmark.js"></script>
 <script type="text/javascript">
-    function createMessage(message) {
+    function createMessage(message, success = true) {
         var snackbar = document.createElement("div");
         snackbar.setAttribute("id", "snackbar");
+        if(success == true) {
+            snackbar.classList.add("snackbar-blue");
+        }else{
+            snackbar.classList.add("snackbar-red");
+        }
         snackbar.innerHTML = message;
         document.body.appendChild(snackbar);
         setTimeout(remove, 3500);
@@ -135,7 +140,12 @@
 
     {% if messages %}
         {% for message in messages %}
-            createMessage("{{message}}");
+            {% if message.tags == "SUCCESS" %}
+                var success = true;
+            {% else %}
+                var success = false;
+            {% endif %}
+            createMessage("{{message}}", success);
         {% endfor %}
     {% endif %}
 
