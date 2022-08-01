@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load check_mango %}
+{% load compare_dates %}
 {% load static %}
 {% block title %}{{sand.name}}{% endblock %}
 
@@ -86,7 +87,7 @@
                                     </form>
                                 {% endif %}
                             </div>
-                            {% if water.date_edited != water.date_added %}
+                            {% if water.date_edited|same_time:water.date_added == False %}
                                 <div class = "water-signature">
                                     <p>edited {{water.date_edited}}</p>
                                 </div>
