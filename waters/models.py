@@ -14,7 +14,7 @@ class Water(models.Model):
             ]
     )
     date_added = models.DateTimeField(auto_now_add=True)
-    date_edited = models.DateTimeField(auto_now_add=True)
+    date_edited = models.DateTimeField(auto_now=True)
     mangoes = models.IntegerField(default=0)
 
     class Meta:

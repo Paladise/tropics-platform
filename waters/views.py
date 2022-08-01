@@ -32,7 +32,6 @@ def edit(request, id):
 
             if water.content != content:
                 water.content = content
-                water.date_edited = datetime.now()
                 water.save()
                 messages.add_message(request, messages.SUCCESS, "Edited water")
             redirect_url = reverse("sands:sand", args=(water.sand.id, water.sand.slug))
