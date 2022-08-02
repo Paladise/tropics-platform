@@ -1,13 +1,6 @@
 from authentication.models import User
 
 def create_user(backend, user, response, *args, **kwargs):
-    print("CREATING USER:")
-    print("backend:", backend)
-    print("user:", user)
-    print("response:", response)
-    print("args:", args)
-    print("kwargs:", kwargs)
-
     if user:
         return {'is_new': False}
 
@@ -16,6 +9,7 @@ def create_user(backend, user, response, *args, **kwargs):
     for k, v in kwargs["details"].items():
         setattr(u, k, v)
 
+    u.set_unusable_password() # To prevent annoying popup in Admin interface
     u.save()
 
     return {
