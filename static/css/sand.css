@@ -215,6 +215,11 @@ input {
     border-bottom: 1px solid hsl(210,8%,90%);
 }
 
+.deleted-water {
+    background-color: hsl(358,75%,97%);
+    border-top: 1px solid hsl(358,76%,90%);
+}
+
 .mango-container {
     width: 60px;
     height: 100%;
@@ -250,6 +255,18 @@ input {
     overflow: auto;
 }
 
+.water-notice {
+    width: 100%;
+    border-radius: 5px;
+    background-color: rgb(235, 244, 251);
+    border: 1px solid rgb(166, 206, 237);
+    margin-bottom: 20px;
+    padding: 20px 0px;
+    padding-left: 25px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
 .create-water-header {
     font-size: 24px;
     font-weight: lighter;
@@ -280,6 +297,11 @@ input {
 
 .water-menu-item:hover {
     cursor: pointer;
+}
+
+.deleted-water-menu-item {
+    color: hsl(358,68%,59%);
+    font-weight: bold;
 }
 
 .water-signature {

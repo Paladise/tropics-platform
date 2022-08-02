@@ -56,10 +56,16 @@ def sand(request, id, the_slug):
                 water.save()
                 go_to_water = water.id
                 messages.add_message(request, messages.SUCCESS, "Gave mango")
-        elif "delete" in data and Water.objects.filter(id=data["delete"]).exists():
+        elif "delete" in data and Water.objects.get(id=data["delete"]).deleted == False:
             water = Water.objects.get(id=data["delete"])
-            water.delete()
+            water.deleted = True
+            water.save()
             messages.add_message(request, messages.SUCCESS, "Deleted water")
+        elif "undelete" in data and Water.objects.get(id=data["undelete"]).deleted == True:
+            water = Water.objects.get(id=data["undelete"])
+            water.deleted = False
+            water.save()
+            messages.add_message(request, messages.SUCCESS, "Undeleted water")
         elif "add_teacher" in data:
             form = TeacherForm(request.POST)
             if form.is_valid():

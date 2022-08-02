@@ -12,7 +12,7 @@ class User(AbstractUser):
     graduation_year = models.IntegerField(default=0, null=False)
     is_teacher = models.BooleanField(default=False, null=False)
     is_student = models.BooleanField(default=True, null=False)
-    gave_mangoes = models.ManyToManyField(Water)
+    gave_mangoes = models.ManyToManyField(Water, blank=True) # Blank for admin interface
 
     @property
     def has_management_permission(self) -> bool:
