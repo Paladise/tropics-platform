@@ -209,7 +209,7 @@ input {
 .water {
     position: relative;
     display: flex;
-    padding: 10px 0px;
+    padding: 16px 0px;
     overflow: hidden;
     max-width: 800px;
     border-bottom: 1px solid hsl(210,8%,90%);

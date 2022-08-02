@@ -4,15 +4,17 @@
 {% block title %}{{sand.name}}{% endblock %}
 
 {% block head %}
-    <script src="{% static 'js/delete.js' %}"></script>
-    <script src="{% static 'js/filter_waters.js' %}"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'css/sand.css' %}">
     <link rel="stylesheet" href="https://unpkg.com/@stackoverflow/stacks/dist/css/stacks.min.css">
     <link rel="stylesheet" href="https://unpkg.com/@stackoverflow/stacks-editor/dist/styles.css">
 
-    <script src="https://unpkg.com/@stackoverflow/stacks/dist/js/stacks.min.js"></script>
-    <script src="https://unpkg.com/@highlightjs/cdn-assets@latest/highlight.min.js"></script>
-    <script src="https://unpkg.com/@stackoverflow/stacks-editor/dist/app.bundle.js"></script>
+    <script src="https://unpkg.com/commonmark@0.29.3/dist/commonmark.js"></script>
+    
+    <script type="text/javascript">
+        // Initialize common mark (Markdown) parser and renderer
+        var reader = new commonmark.Parser();
+        var writer = new commonmark.HtmlRenderer();
+    </script>
 {% endblock %}
 
 {% block body %}
@@ -20,7 +22,6 @@
       <a href="{% url 'authentication:index' %}">Tropics</a>
       <input class = "searchbar" placeholder = "Filter waters here..." onkeyup="filter()" id = "search"/>
     </div>
-    
     <div class="navbar-spacing"></div>
     <div class="container">
         <div class="left-container">
@@ -48,7 +49,6 @@
                         <input type = "submit" value = "Add Teacher" name = "add_teacher">
                     </form>
                 </div>
-    
             </div>
             <div class="main">
                 {% for water in waters %}
@@ -110,7 +110,7 @@
                                         <div class = "water-details">
                                             <img class = "avatar" src = "{{water.author.email|get_gravatar}}">
                                             <div class = "water-user-details">
-                                                <p class = "water-user-name">{{water.author.full_name}}{% if user.has_management_permission %} <span title = "Staff">♦</span>{% endif %}</p>
+                                                <p class = "water-user-name">{{water.author.full_name}}{% if water.author.has_management_permission %} <span title = "Staff">♦</span>{% endif %}</p>
                                                 <p class = "water-user-qualification">{{water.author.qualification}}</p>
                                             </div>
                                         </div>
@@ -118,6 +118,13 @@
                                 </div>
                             </div>
                         </div>
+                        
+                        <script type="text/javascript">
+                            var parsed = reader.parse('{{water.content|safe}}');
+                            var result = writer.render(parsed); // result is a String
+                            document.getElementById("water-text-content-{{water.id}}").innerHTML = result;
+                            document.getElementById("share-{{water.id}}").setAttribute("onclick", "copy('" + window.location.origin + "/waters/" + "{{water.id}}', 'Copied Share Link')");
+                        </script>
                     {% endif %}
     
                 {% endfor %}
@@ -136,7 +143,10 @@
         </div>
     </div>
     
-    <script src="https://unpkg.com/commonmark@0.29.3/dist/commonmark.js"></script>
+    <script src="https://unpkg.com/@stackoverflow/stacks/dist/js/stacks.min.js"></script>
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@latest/highlight.min.js"></script>
+    <script src="https://unpkg.com/@stackoverflow/stacks-editor/dist/app.bundle.js"></script>
+    <script src="{% static 'js/filter_waters.js' %}"></script>s
     <script type="text/javascript">
         function delete_water(e) {
             if(!confirm("Delete this water?")){
@@ -168,17 +178,6 @@
                 snackbar.remove();
             }
         }
-    
-        {% if messages %}
-            {% for message in messages %}
-                {% if message.tags == "SUCCESS" %}
-                    var success = true;
-                {% else %}
-                    var success = false;
-                {% endif %}
-                createMessage("{{message}}", success);
-            {% endfor %}
-        {% endif %}
     
         new window.stacksEditor.StacksEditor(
           document.querySelector("#editor-container"),
@@ -215,16 +214,17 @@
             document.body.removeChild(TempText);
             createMessage(log_message);
         }
-    
-        var reader = new commonmark.Parser();
-        var writer = new commonmark.HtmlRenderer();
-    
-        {% for water in waters %}
-            var parsed = reader.parse('{{water.content|safe}}');
-            var result = writer.render(parsed); // result is a String
-            document.getElementById("water-text-content-{{water.id}}").innerHTML = result;
-            document.getElementById("share-{{water.id}}").setAttribute("onclick", "copy('" + window.location.origin + "/waters/" + "{{water.id}}', 'Copied Share Link')");
-        {% endfor %}
+        
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == "SUCCESS" %}
+                    var success = true;
+                {% else %}
+                    var success = false;
+                {% endif %}
+                createMessage("{{message}}", success);
+            {% endfor %}
+        {% endif %}
     
         {% if go_to_water %}
             document.getElementById("{{ go_to_water }}").scrollIntoView();
