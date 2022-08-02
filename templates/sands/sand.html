@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load check_mango %}
 {% load compare_dates %}
+{% load gravatar %}
 {% load static %}
 {% block title %}{{sand.name}}{% endblock %}
 
@@ -96,8 +97,14 @@
                                 </div>
                             {% endif %}
                             <div class="water-signature">
-                                <p style = "flex-basis: 1;">written {{water.date_added}}</p>
-                                <p class = "water-credentials">{{water.author.full_name}} ({{water.author.username}})<br/>{{water.author.qualification}}</p>
+                                <p class = "water-date-tag">written {{water.date_added}}</p>
+                                <div class = "water-details">
+                                    <img class = "avatar" src = "{{water.author.email|get_gravatar}}">
+                                    <div class = "water-user-details">
+                                        <p class = "water-user-name">{{water.author.full_name}}</p>
+                                        <p class = "water-user-qualification">{{water.author.qualification}}</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

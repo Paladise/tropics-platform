@@ -290,12 +290,36 @@ input {
     text-align: right;
 }
 
-.water-credentials {
+.water-date-tag {
+    flex-basis: 1;
+    margin-bottom: 4px;
+}
+
+.avatar {
+    float: left;
+    width: 32px;
+    height: 32px;
+}
+
+.water-user-details {
+    float: left;
     font-size: 14px;
     flex-grow: 1;
-    margin-top: 15px;
+    width: calc(100% - 40px);
+    margin-left: 8px;
+    text-align: left;
+}
+
+.water-user-name {
     color: rgb(10, 149, 255);
 }
+
+.water-user-qualification {
+    font-weight: bold;
+    color: rgb(106, 115, 124);
+}
+
+
 
 .create-water input[type=submit] {
     background-color: rgb(10, 149, 255);
