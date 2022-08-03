@@ -8,8 +8,11 @@ from datetime import datetime
 
 from .models import Water
 
+from tropics.decorators import not_banned
+
 
 @login_required
+@not_banned
 def go_to_sand(request, id):
     water = Water.objects.get(id=id)
     redirect_url = reverse("sands:sand", args=(water.sand.id,water.sand.slug))
@@ -17,6 +20,7 @@ def go_to_sand(request, id):
 
 
 @login_required
+@not_banned
 def edit(request, id):
     water = Water.objects.get(id=id)
     if not user_can_moderate(request.user, water.author):

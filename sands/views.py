@@ -9,14 +9,18 @@ from waters.models import Water
 
 from .forms import TeacherForm
 
+from tropics.decorators import not_banned
+
 
 @login_required
+@not_banned
 def index(request):
     sands = Sand.objects.all()
     return render(request, "sands/index.html", {"sands": sands})
 
 
 @login_required
+@not_banned
 def sand(request, id, the_slug):
     sand = Sand.objects.get(id=id)
     if not SandView.objects.filter(sand=sand,session=request.session.session_key):
