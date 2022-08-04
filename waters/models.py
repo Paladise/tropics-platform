@@ -14,9 +14,12 @@ class Water(models.Model):
             ]
     )
     date_added = models.DateTimeField(auto_now_add=True)
-    date_edited = models.DateTimeField(auto_now=True)
+    date_edited = models.DateTimeField(auto_now_add=True)
     mangoes = models.IntegerField(default=0)
     deleted = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return f"{self.sand} water by {self.author}"
 
     class Meta:
         ordering = ("-mangoes", "date_added")

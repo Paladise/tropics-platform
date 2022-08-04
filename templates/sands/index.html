@@ -18,7 +18,7 @@
   {% for sand in sands %}
     <div class = "sand">
       <div class = "sand-header">
-        <a class = "sand-name" href="{% url 'sands:sand' sand.id sand.slug%}">{{sand.name}}</a>
+        <a class = "sand-name" href="{% url 'sands:sand' sand.id sand.slug %}">{{sand.name}}</a>
         <p class = "sand-tag">{{sand.category}}</p>
       </div>
     </div>

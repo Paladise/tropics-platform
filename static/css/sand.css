@@ -100,11 +100,70 @@ input {
     padding: 20px;
 }
 
-.main{
-    width: 70%;
+.main {
+    float: left;
+    width: calc(100% - 300px);
 }
 
-.header{
+.side {
+    float: right;
+    width: 300px;
+    box-sizing: border-box;
+    padding-left: 15px;
+}
+
+.trending {
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 12px;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px, rgba(0, 0, 0, 0.05) 0px 1px 4px 0px, rgba(0, 0, 0, 0.05) 0px 2px 8px 0px;
+
+    background-color: #f5ddc0; 
+    color: black;
+    min-height: 300px;
+    background-repeat: no-repeat;
+    background-position: 100% 125%;
+    
+    background-image: -webkit-linear-gradient(
+        top left,
+        rgba(255, 255, 255, 0.2) 0%,
+        rgba(255, 255, 255, 0.2) 40%,
+        rgba(255, 255, 255, 0.8) 46%,
+        rgba(255, 255, 255, 0.0) 50%
+    );
+    
+    background-size: 250% 250%;
+    transition: background-position 0s ease;
+}
+
+.trending:hover {
+    background-position: 0 0, 0 0;
+    transition-duration: 1s;
+}
+
+.trending-header {
+    background-color: #f3d7b6;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    padding: 0px 20px;
+    font-weight: bold;
+}
+
+.trending-detail {
+    display: block;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    padding: 0px 40px;
+}
+
+.trending-detail:hover {
+    cursor: pointer;
+}
+
+.header {
     width: 100%;
     border-bottom: 1px solid hsl(210,8%,90%);
     padding-bottom: 10px;
@@ -309,7 +368,14 @@ input {
     flex-direction: column;
     padding: 5px;
     margin-left: 15px;
-    text-align: right;
+    text-align: left;
+    border-radius: 4px;
+    min-width: 200px;
+}
+
+.staff-water-signature {
+    background-color: rgb(235, 244, 251);
+    border: 1px solid rgb(166, 206, 237);;
 }
 
 .water-date-tag {
@@ -329,7 +395,6 @@ input {
     flex-grow: 1;
     width: calc(100% - 40px);
     margin-left: 8px;
-    text-align: left;
 }
 
 .water-user-name {

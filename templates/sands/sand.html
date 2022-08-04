@@ -40,7 +40,7 @@
                 </div>
                 <div class="sand-details">
                     {% for teacher in sand.teachers.all %}
-                        <p class="sand-teacher">{{teacher.display_name}}</p>
+                        <p class="sand-teacher" {% if teacher.fcps_email %}title="{{teacher.fcps_email}}"{% endif %}>{{teacher.display_name}}</p>
                     {% endfor %}
                     
                     <form action = "" method = "POST" class = "add-teacher">
@@ -52,12 +52,20 @@
             </div>
             <div class="main">
                 {% for water in waters %}
-                    {% if water.deleted == False or user|can_moderate:water.author == True %}
-                        <div class = "water{% if water.deleted == True %} deleted-water{% endif %}" id = {{water.id}}>
+                    {% if not water.author.is_banned and not water.deleted or user|can_moderate:water.author %}
+                        <div class = "water{% if water.deleted or water.author.is_banned %} deleted-water{% endif %}" id = {{water.id}}>
                             <div class = "mango-container">
-                                <form action = "" method = "POST" class = "mango-form">
+                                <form action = 
+                                "
+                                {% if user|gave_mango:water %}
+                                    {% url 'waters:take_back_mango' water.id %}
+                                {% else %}
+                                    {% url 'waters:give_mango' water.id %}
+                                {% endif %}
+                                " 
+                                method = "POST" class = "mango-form">
                                     {% csrf_token %}
-                                    {% if user|gave_mango:water == True %}
+                                    {% if user|gave_mango:water %}
                                         <input type="hidden" value={{water.id}} name="remove_mango" />
                                         <input type="image" src="{% static 'images/gave_mango.png' %}" class = "mango"/>
                                     {% else %}
@@ -68,49 +76,64 @@
                                 <p class="num-mangoes">{{water.mangoes}}</p>
                             </div>
                             <div class = "water-content">
-                                {% if water.deleted == True %}
+                                {% if water.deleted %}
                                     <div class = "water-notice">
-                                        This water is hidden.
+                                        This water is hidden <span style = "font-weight: normal;">because the water has been evaporated.</span>
+                                    </div>
+                                {% elif water.author.is_banned %}
+                                    <div class = "water-notice">
+                                        This water is hidden <span style = "font-weight: normal;">because the author has been banned.</span>
                                     </div>
                                 {% endif %}
                                 <p class="s-prose" id="water-text-content-{{water.id}}"></p>
         
                                 <div class = "water-footer">
                                     <div class = "water-menu">
-                                        <form class="water-menu-item" onsubmit = "return false;">
-                                            <input type="submit" id="share-{{water.id}}" value = "Share"/>
-                                        </form>
-                                        {% if user|can_moderate:water.author == True %}
-                                            <form class="water-menu-item" action = "{% url 'waters:edit' water.id %}" method = "POST">
-                                                {% csrf_token %}
-                                                <input type="submit" value = "Edit"/>
+                                        {% if not water.deleted or user.has_management_permission %}
+                                            <form class="water-menu-item" onsubmit = "return false;">
+                                                <input type="submit" id="share-{{water.id}}" value = "Share"/>
                                             </form>
-                                            {% if water.deleted == False %}
-                                                <form class="water-menu-item" action = "" method = "POST">
+                                        {% endif %}
+                                        {% if user|can_moderate:water.author %}
+                                            {% if not water.deleted or user.has_management_permission %}
+                                                <form class="water-menu-item" action = "{% url 'waters:edit' water.id %}" method = "POST">
+                                                    {% csrf_token %}
+                                                    <input type="submit" value = "Churn"/>
+                                                </form>
+                                            {% endif %}
+                                            {% if not water.deleted %}
+                                                <form class="water-menu-item" action = "{% url 'waters:delete' water.id %}" method = "POST">
                                                     {% csrf_token %}
                                                     <input type="hidden" value={{water.id}} name="delete" />
-                                                    <input type="submit" onclick="delete_water(event)" value = "Delete"/>
+                                                    <input type="submit" onclick="delete_water(event)" value = "Evaporate"/>
                                                 </form>
-                                            {% elif user.is_superuser == True %}
-                                                <form class="water-menu-item deleted-water-menu-item" action = "" method = "POST">
+                                            {% elif user.has_management_permission %}
+                                                <form class="water-menu-item deleted-water-menu-item" action = "{% url 'waters:undelete' water.id %}" method = "POST">
                                                     {% csrf_token %}
                                                     <input type="hidden" value={{water.id}} name="undelete" />
-                                                    <input type="submit" onclick="undelete_water(event)" value = "Undelete"/>
+                                                    <input type="submit" onclick="undelete_water(event)" value = "Condense"/>
                                                 </form>
                                             {% endif %}
                                         {% endif %}
                                     </div>
-                                    {% if water.date_edited|same_time:water.date_added == False %}
+                                    {% if not water.date_edited|same_time:water.date_added %}
                                         <div class = "water-signature">
-                                            <p>edited {{water.date_edited}}</p>
+                                            <p>churned {{water.date_edited|format_time}}</p>
                                         </div>
                                     {% endif %}
-                                    <div class="water-signature">
-                                        <p class = "water-date-tag">written {{water.date_added}}</p>
+                                    <div class="water-signature{% if water.author.has_management_permission %} staff-water-signature{% endif %}">
+                                        <p class = "water-date-tag">flowed {{water.date_added|format_time}}</p>
                                         <div class = "water-details">
                                             <img class = "avatar" src = "{{water.author.email|get_gravatar}}">
                                             <div class = "water-user-details">
-                                                <p class = "water-user-name">{{water.author.full_name}}{% if water.author.has_management_permission %} <span title = "Staff">♦</span>{% endif %}</p>
+                                                <p class = "water-user-name">
+                                                    {{water.author.full_name}}
+                                                    {% if water.author.has_management_permission %}
+                                                        <span title = "Staff" style = "font-weight: bold;">♦</span>
+                                                    {% elif water.author.is_banned %}
+                                                        <span title = "Banned" style = "font-weight: bold;">❌</span>
+                                                    {% endif %}
+                                                </p>
                                                 <p class = "water-user-qualification">{{water.author.qualification}}</p>
                                             </div>
                                         </div>
@@ -140,23 +163,33 @@
                 </div>
     
             </div>
+            <div class = "side">
+                <div class = "trending">
+                    <div class = "trending-header">
+                        Hot Sands
+                    </div>
+                    {% for s in hot_sands %}
+                        <a class = "trending-detail" href="{% url 'sands:sand' s.id s.slug %}">{{s}}</a>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
     </div>
     
     <script src="https://unpkg.com/@stackoverflow/stacks/dist/js/stacks.min.js"></script>
     <script src="https://unpkg.com/@highlightjs/cdn-assets@latest/highlight.min.js"></script>
     <script src="https://unpkg.com/@stackoverflow/stacks-editor/dist/app.bundle.js"></script>
-    <script src="{% static 'js/filter_waters.js' %}"></script>s
+    <script src="{% static 'js/filter_waters.js' %}"></script>
     <script type="text/javascript">
         function delete_water(e) {
-            if(!confirm("Delete this water?")){
+            if(!confirm("Evporate this water?")){
                 //prevent sending the request when user clicked "Cancel"
                 e.preventDefault();
             }
         }
         
         function undelete_water(e) {
-            if(!confirm("Undelete this water?")) {
+            if(!confirm("Condense this water?")) {
                 //prevent sending the request when user clicked "Cancel"
                 e.preventDefault();
             }
@@ -217,7 +250,7 @@
         
         {% if messages %}
             {% for message in messages %}
-                {% if message.tags == "SUCCESS" %}
+                {% if message.tags == "success" %}
                     var success = true;
                 {% else %}
                     var success = false;

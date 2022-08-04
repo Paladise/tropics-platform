@@ -30,6 +30,7 @@ def sand(request, id, the_slug):
     waters = Water.objects.filter(sand=sand)
     go_to_water = ""
     teacher_form = TeacherForm()
+    hot_sands = {water.sand for water in Water.objects.filter(deleted = False, author__is_banned = False).order_by('-date_edited')[:3]}
     if request.method == "POST":
         data = request.POST.dict()
         if "content" in data:
@@ -37,39 +38,13 @@ def sand(request, id, the_slug):
             content = content.replace('"', '\\"')
             content = content.replace("'", "\\'")
 
-            if not Water.objects.filter(content=content, author=request.user, sand=sand).exists():
+            if not Water.objects.filter(content=content, sand=sand).exists():
                 water = Water(content=content, author=request.user, sand=sand)
                 water.save()
                 go_to_water = water.id
                 messages.add_message(request, messages.SUCCESS, "Added water")
-        elif "remove_mango" in data:
-            water = Water.objects.get(id=data["remove_mango"])
-            if request.user.gave_mangoes.filter(id=water.id).exists():
-                request.user.gave_mangoes.remove(water)
-                water.mangoes -= 1
-                water.save()
-                go_to_water = water.id
-                messages.add_message(request, messages.SUCCESS, "Removed mango")
-        elif "give_mango" in data:
-            water = Water.objects.get(id=data["give_mango"])
-            if request.user == water.author:
-                messages.add_message(request, messages.ERROR, "Can't give mango to your own water!")
-            elif not request.user.gave_mangoes.filter(id=water.id).exists():
-                request.user.gave_mangoes.add(water)
-                water.mangoes += 1
-                water.save()
-                go_to_water = water.id
-                messages.add_message(request, messages.SUCCESS, "Gave mango")
-        elif "delete" in data and Water.objects.get(id=data["delete"]).deleted == False:
-            water = Water.objects.get(id=data["delete"])
-            water.deleted = True
-            water.save()
-            messages.add_message(request, messages.SUCCESS, "Deleted water")
-        elif "undelete" in data and Water.objects.get(id=data["undelete"]).deleted == True:
-            water = Water.objects.get(id=data["undelete"])
-            water.deleted = False
-            water.save()
-            messages.add_message(request, messages.SUCCESS, "Undeleted water")
+            else:
+                messages.add_message(request, messages.ERROR, "Duplicates not allowed!")
         elif "add_teacher" in data:
             form = TeacherForm(request.POST)
             if form.is_valid():
@@ -81,4 +56,4 @@ def sand(request, id, the_slug):
             else:
                 teacher_form = form
     
-    return render(request, 'sands/sand.html', {"sand": sand, "waters": waters, "num_views": num_views, "go_to_water": go_to_water, "teacher_form": teacher_form})
+    return render(request, 'sands/sand.html', {"sand": sand, "waters": waters, "num_views": num_views, "go_to_water": go_to_water, "teacher_form": teacher_form, "hot_sands": hot_sands})
