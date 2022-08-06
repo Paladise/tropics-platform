@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 
 from .models import Sand, SandView, SandTeacher
 from waters.models import Water
@@ -23,6 +24,10 @@ def index(request):
 @not_banned
 def sand(request, id, the_slug):
     sand = Sand.objects.get(id=id)
+    if sand.slug != the_slug:
+        redirect_url = reverse("sands:sand", args=(id, sand.slug))
+        return redirect(redirect_url)
+    
     if not SandView.objects.filter(sand=sand,session=request.session.session_key):
         view = SandView(sand=sand, session=request.session.session_key)
         view.save()
