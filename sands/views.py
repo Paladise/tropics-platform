@@ -22,9 +22,9 @@ def index(request):
 
 @login_required
 @not_banned
-def sand(request, id, the_slug):
+def sand(request, id, slug):
     sand = Sand.objects.get(id=id)
-    if sand.slug != the_slug:
+    if sand.slug != slug:
         redirect_url = reverse("sands:sand", args=(id, sand.slug))
         return redirect(redirect_url)
     
